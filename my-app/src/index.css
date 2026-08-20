@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #191613;
+  --color-ink-raised: #211d18;
+  --color-steel: #2b2d30;
+  --color-steel-raised: #33363a;
+  --color-leather: #79212f;
+  --color-amber: #c08a2d;
+  --color-towel: #f5f1e9;
+  --color-silver: #a7a49c;
+
+  --font-display: "Oswald", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Karla", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ink font-body text-towel antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-amber);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-amber);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* ————— Ledger eyebrow ————— */
+  .eyebrow {
+    @apply font-mono text-[0.72rem] font-medium uppercase tracking-[0.3em] text-amber;
+  }
+
+  /* ————— Fade sheen: the "fade" motif, dark roots → clean ————— */
+  .fade-sheen {
+    background:
+      radial-gradient(130% 100% at 50% 0%, rgba(192, 138, 45, 0.16), transparent 55%),
+      linear-gradient(180deg, #100e0c 0%, #221b14 55%, #4a3a29 100%);
+  }
+
+  .fade-bar-v {
+    background: linear-gradient(180deg, rgba(245, 241, 233, 0.1), var(--color-amber) 88%);
+  }
+
+  /* ————— Buttons ————— */
+  .btn-primary {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm bg-leather px-6 py-3 font-mono text-[0.78rem] font-bold uppercase tracking-[0.2em] text-towel transition-colors duration-200 hover:bg-[#8f2a3a] disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .btn-outline {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm border border-white/20 px-6 py-3 font-mono text-[0.78rem] font-bold uppercase tracking-[0.2em] text-towel transition-colors duration-200 hover:border-amber hover:text-amber disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  /* ————— Form fields ————— */
+  .input-dark {
+    @apply w-full rounded-sm border border-white/15 bg-ink px-3.5 py-2.5 text-sm text-towel transition-colors placeholder:text-silver/70 focus:border-amber focus:outline-none;
+  }
+
+  .select-dark {
+    @apply w-full rounded-sm border border-white/15 bg-ink px-3 py-2.5 text-sm text-towel transition-colors focus:border-amber focus:outline-none;
+  }
+
+  /* ————— Barber card cover ————— */
+  .card-cover {
+    @apply relative flex h-36 items-center justify-center overflow-hidden;
+  }
+
+  .avatar-ring {
+    @apply flex h-20 w-20 items-center justify-center rounded-full border-2 border-amber bg-ink text-4xl shadow-[0_0_0_6px_rgba(192,138,45,0.12)];
+  }
+
+  .meta-tag {
+    @apply inline-flex items-center gap-1.5 rounded-sm border border-white/15 bg-ink px-2 py-0.5 font-mono text-[0.68rem] uppercase tracking-wider text-silver;
+  }
+
+  /* ————— Chat widget bubbles ————— */
+  .chat-bubble-user {
+    @apply max-w-[85%] rounded-sm rounded-br-sm bg-leather px-3.5 py-2.5 text-sm leading-relaxed text-towel shadow-[0_4px_14px_-6px_rgba(0,0,0,0.6)];
+  }
+
+  .chat-bubble-assistant {
+    @apply max-w-[85%] rounded-sm rounded-bl-sm border border-white/10 bg-steel-raised px-3.5 py-2.5 text-sm leading-relaxed text-towel;
+  }
+}
+
+/* ————— Booking confirmation settle-in ————— */
+@keyframes settle-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-settle-in {
+  animation: settle-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ————— react-datepicker on the dark theme ————— */
+.react-datepicker {
+  font-family: var(--font-body);
+  background: var(--color-ink-raised);
+  border: 1px solid rgba(245, 241, 233, 0.15);
+  border-radius: 2px;
+  color: var(--color-towel);
+}
+
+.react-datepicker__header {
+  background: var(--color-ink);
+  border-bottom: 1px solid rgba(245, 241, 233, 0.12);
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  color: var(--color-towel);
+}
+
+.react-datepicker__day {
+  color: var(--color-towel);
+}
+
+.react-datepicker__day:hover {
+  background: rgba(192, 138, 45, 0.2);
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background: var(--color-amber);
+  color: var(--color-ink);
+}
+
+.react-datepicker__day--keyboard-selected:hover {
+  background: var(--color-amber);
+}

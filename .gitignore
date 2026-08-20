@@ -1,0 +1,18 @@
+# Environment / secrets
+.env
+ai/chatbot/.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Logs
+*.log
+
+# Node
+node_modules/
+dist/
+
+*.pid
+*.db
