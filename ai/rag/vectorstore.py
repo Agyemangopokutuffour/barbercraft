@@ -31,12 +31,15 @@ collection = client.get_or_create_collection(
     embedding_function=embedding_fn
 )
 
+import os
+import chromadb
+from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
+
 class BarberEmbeddingFunction(OpenAIEmbeddingFunction):
-    """Wrapper that exposes the model name property Chroma expects."""
-
-    def __init__(self, model_name: str = EMBEDDING_MODEL_NAME):
-        super().__init__(model_name=model_name)
-
+    def __init__(self, model_name="text-embedding-3-small"):
+        # Explicitly pass api_key to avoid Chroma falling back to CHROMA_OPENAI_API_KEY
+        api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
+        super().__init__(api_key=api_key, model_name=model_name)
 
 _embedding_fn = BarberEmbeddingFunction()
 
