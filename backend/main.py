@@ -34,6 +34,24 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 
+from database import SessionLocal
+from models import Barber
+
+def seed_if_empty():
+    db = SessionLocal()
+    try:
+        if db.query(Barber).count() == 0:
+            print("DEBUG: Database empty, running seed...", flush=True)
+            from seed import seed
+            seed()
+            print("DEBUG: Seed complete.", flush=True)
+        else:
+            print(f"DEBUG: Database already has {db.query(Barber).count()} barbers, skipping seed.", flush=True)
+    finally:
+        db.close()
+
+seed_if_empty()
+
 app.include_router(barbers_router)
 app.include_router(bookings_router)
 app.include_router(services_router)
