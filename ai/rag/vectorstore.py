@@ -9,18 +9,29 @@ Responsibilities:
 """
 
 import os
+
 from typing import List, Dict, Any
 
-from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
 import chromadb
-
 
 CHROMA_PATH = os.getenv("CHROMA_PATH", "chroma_data")
 COLLECTION_NAME = "barbers"
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 
+embedding_fn = OpenAIEmbeddingFunction(
+    api_key = os.getenv("OPENROUTER_API_KEY"),
+    model_name="text-embedding-3-small"
+)
 
-class BarberEmbeddingFunction(SentenceTransformerEmbeddingFunction):
+# Pass the API-based embedding function when initializing the collection
+client = chromadb.PersistentClient(path="chroma_data")
+collection = client.get_or_create_collection(
+    name="barbercraft_rag",
+    embedding_function=embedding_fn
+)
+
+class BarberEmbeddingFunction(OpenAIEmbeddingFunction):
     """Wrapper that exposes the model name property Chroma expects."""
 
     def __init__(self, model_name: str = EMBEDDING_MODEL_NAME):
