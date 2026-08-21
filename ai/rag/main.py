@@ -54,7 +54,12 @@ if os.getenv("FRONTEND_URL"):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows Vercel, localhost, and any frontend origin
+    allow_origins=[
+        "https://barbercraft-one.vercel.app",
+        "https://barbercraft-gx2g6mv3g-agyemangopokutuffours-projects.vercel.app",
+        "http://localhost:3000",
+        "*"  # Allows all origins (recommended while testing previews)
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
