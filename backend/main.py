@@ -18,6 +18,8 @@ origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
 if os.getenv("FRONTEND_URL"):
     origins.append(os.getenv("FRONTEND_URL"))
 
+print(f"DEBUG: CORS origins configured as: {origins}", flush=True)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
