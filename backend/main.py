@@ -14,7 +14,11 @@ app = FastAPI(
 
 # Vite dev server origins (plus the alternate port Vite can pick up),
 # and the production frontend origin via the FRONTEND_URL env var.
-origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://barbercraft-one.vercel.app",
+]
 if os.getenv("FRONTEND_URL"):
     origins.append(os.getenv("FRONTEND_URL"))
 
