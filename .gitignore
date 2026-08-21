@@ -1,18 +1,23 @@
-# Environment / secrets
+# Secrets
 .env
-ai/chatbot/.env
+**/.env
 
-# Python
+# Python build artifacts
 __pycache__/
+/**/__pycache__/
 *.pyc
+
+# Local Chroma database
+chroma_data/
+/**/chroma_data/
+
+# Virtual Environment
 .venv/
+/**/.venv/
 
-# Logs
+# Logs & System
 *.log
-
-# Node
 node_modules/
 dist/
-
 *.pid
 *.db
