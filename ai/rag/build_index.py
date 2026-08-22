@@ -4,6 +4,7 @@ store in ChromaDB.
 Run:  python -m ai.rag.build_index
 or:  python ai/rag/build_index.py
 """
+
 import json
 import os
 import sys
@@ -30,7 +31,10 @@ async def _get(path: str):
         return resp.json()
 
 
-async def main():
+async def fetch_and_enrich_barbers():
+    """Fetch all barbers from the backend and transform into enriched dicts
+    ready for embedding. Same logic as the original main(), but returns
+    the enriched list instead of writing to Chroma."""
     print("Fetching barbers from backend...")
     barbers = await _get("/barbers")
     print(f"Fetched {len(barbers)} barbers.")
@@ -63,6 +67,12 @@ async def main():
             }
         )
 
+    print("Fetched and enriched barbers ready for embedding.")
+    return enriched
+
+
+async def main():
+    enriched = await fetch_and_enrich_barbers()
     print("Embedding and storing barbers in Chroma...")
     add_barbers(enriched)
     print("Done. Run the RAG chatbot on port 8003.")

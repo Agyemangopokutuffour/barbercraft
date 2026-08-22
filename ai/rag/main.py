@@ -39,6 +39,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from contextlib import asynccontextmanager
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Auto-build the index if the Chroma collection is empty
+    await build_index_if_empty()
+    yield
+
+
+async def build_index_if_empty():
+    from vectorstore import get_collection
+    coll = get_collection()
+    if coll.count() == 0:
+        print("DEBUG: Vector store empty, building index...", flush=True)
+        from build_index import fetch_and_enrich_barbers
+        enriched = await fetch_and_enrich_barbers()
+        from vectorstore import add_barbers
+        add_barbers(enriched)
+        print(f"DEBUG: Index built, {coll.count()} documents embedded.", flush=True)
+    else:
+        print(f"DEBUG: Vector store already has {coll.count()} documents, skipping build.", flush=True)
+
+
 class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=4000)
     conversation_history: list[dict] = Field(default_factory=list)
