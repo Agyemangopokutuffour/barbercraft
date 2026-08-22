@@ -131,11 +131,10 @@ def root() -> dict:
 
 @app.get("/debug")
 def debug():
-    from vectorstore import get_collection
+    from vectorstore import collection
     import os
-    coll = get_collection()
     try:
-        count = coll.count()
+        count = collection.count()
     except Exception as e:
         return {"error": str(e), "count": None}
     return {
