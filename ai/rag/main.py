@@ -44,6 +44,7 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print("DEBUG: main.py startup reached", flush=True)
     # Auto-build the index if the Chroma collection is empty
     await build_index_if_empty()
     yield
@@ -126,3 +127,18 @@ async def chat(req: ChatRequest) -> ChatResponse:
 @app.get("/")
 def root() -> dict:
     return {"app": "BarberCraft RAG Chat", "chat": "/chat", "docs": "/docs"}
+
+
+@app.get("/debug")
+def debug():
+    from vectorstore import get_collection
+    import os
+    coll = get_collection()
+    try:
+        count = coll.count()
+    except Exception as e:
+        return {"error": str(e), "count": None}
+    return {
+        "collection_count": count,
+        "backend_url": os.getenv("BACKEND_URL"),
+    }
