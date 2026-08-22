@@ -54,18 +54,11 @@ if os.getenv("FRONTEND_URL"):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://barbercraft-one.vercel.app",
-        "https://barbercraft-gx2g6mv3g-agyemangopokutuffours-projects.vercel.app",
-        "http://localhost:3000",
-        "*"  # Allows all origins (recommended while testing previews)
-    ],
+    allow_origins=["*"],  # Allows Vercel preview domains and production
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["*"],  # Essential for OPTIONS preflight requests
     allow_headers=["*"],
 )
-
-
 class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=4000)
     conversation_history: list[dict] = Field(default_factory=list)
