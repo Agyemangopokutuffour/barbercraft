@@ -54,9 +54,14 @@ if os.getenv("FRONTEND_URL"):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows Vercel preview domains and production
+    allow_origins=[
+        "https://barbercraft-one.vercel.app",
+        "https://barbercraft-gx2g6mv3g-agyemangopokutuffours-projects.vercel.app",
+        "http://localhost:3000",
+        "http://localhost:5173",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],  # Essential for OPTIONS preflight requests
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 class ChatRequest(BaseModel):
