@@ -31,15 +31,9 @@ app = FastAPI(
     description="AI assistant with semantic search over barber bios + tool-grounded API calls.",
     version="0.1.0",
 )
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://barbercraft-one.vercel.app",
-        "https://barbercraft-gx2g6mv3g-agyemangopokutuffours-projects.vercel.app",
-        "http://localhost:3000",
-        "http://localhost:5173",
-    ],
+    allow_origin_regex=r"https://.*\.vercel\.app|http://localhost:\d+|http://127\.0\.0\.1:\d+",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
