@@ -141,3 +141,21 @@ def debug():
         "collection_count": count,
         "backend_url": os.getenv("BACKEND_URL"),
     }
+
+@app.post("/rebuild-index")
+def rebuild_index():
+    from vectorstore import collection
+    from build_index import build_index
+    try:
+        build_index()
+        return {
+            "status": "success",
+            "collection_count": collection.count(),
+        }
+    except Exception as e:
+        import traceback
+        return {
+            "status": "error",
+            "error": str(e),
+            "traceback": traceback.format_exc(),
+        }

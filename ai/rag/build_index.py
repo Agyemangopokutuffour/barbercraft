@@ -78,11 +78,18 @@ async def main():
     print("Done. Run the RAG chatbot on port 8003.")
 
 
+async def build_index():
+    """Fetch and enrich barbers, then add them to the vector store."""
+    from vectorstore import add_barbers
+    enriched = await fetch_and_enrich_barbers()
+    add_barbers(enriched)
+    print(f"Index built, {len(enriched)} documents embedded.")
+
 if __name__ == "__main__":
     import asyncio
 
     try:
-        asyncio.run(main())
+        asyncio.run(build_index())
     except Exception as exc:
         print(f"Error: {exc}", file=sys.stderr)
         sys.exit(1)
