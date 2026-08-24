@@ -7,12 +7,12 @@ import so the import works regardless of the working directory.
 
 import os
 import sys
+import json  # <-- Added missing json import
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'chatbot'))
 
 import asyncio
 import logging
-import os
 from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
@@ -145,7 +145,8 @@ async def _agent_loop(task: str, user_id: Optional[str], context: Optional[dict]
 async def agent_execute(req: AgentRequest):
     """Execute an agentic task via ReAct/tool-calling loop."""
     try:
-        result = await asyncio.to_thread(_agent_loop, req.task, req.user_id, req.context)
+        # FIX: Directly await _agent_loop instead of using asyncio.to_thread
+        result = await _agent_loop(req.task, req.user_id, req.context)
         return AgentResponse(**result)
     except Exception as exc:
         logger.exception("Unhandled error in /agent/execute")
