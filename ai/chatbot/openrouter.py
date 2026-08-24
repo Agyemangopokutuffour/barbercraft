@@ -25,7 +25,7 @@ def get_api_key() -> str:
 
 def get_model() -> str:
     # Falls back to a reliable free model if OPENROUTER_MODEL isn't set in Render
-    return os.getenv("OPENROUTER_MODEL", "meta-llama/llama-3.1-8b-instruct:free").strip()
+    return os.getenv("OPENROUTER_MODEL", "qwen-2.5-72b-instruct:free").strip()
 
 
 def _headers() -> dict:
