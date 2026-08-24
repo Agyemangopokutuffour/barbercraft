@@ -67,11 +67,14 @@ const ChatWidget = ({ open, onClose }) => {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${CHATBOT_API_URL}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, conversation_history: history }),
-      });
+     const res = await fetch(`${CHATBOT_API_URL}/agent/execute`, {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+       body: JSON.stringify({
+         task: text,
+         context: { conversation_history: history },
+       }),
+     });
 
       if (!res.ok) {
         if (res.status === 429) {
@@ -81,7 +84,10 @@ const ChatWidget = ({ open, onClose }) => {
       }
 
       const data = await res.json();
-      const reply = data?.reply || 'Sorry, I could not find an answer for that. Try rephrasing?';
+      const reply =
+        data?.final_result ||
+        data?.reply ||
+        "Sorry, I could not find an answer for that.";
       setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
     } catch (err) {
       if (err.message === 'rate-limit') {
