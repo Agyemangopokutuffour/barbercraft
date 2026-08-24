@@ -21,8 +21,8 @@ from pydantic import BaseModel, Field
 
 from openrouter import run_chat, _complete, OpenRouterError
 
-from agent.schemas import AgentRequest, AgentResponse
-from agent.tools import dispatch_tool, TOOL_SCHEMAS
+from schemas import AgentRequest, AgentResponse
+from tools import dispatch_tool, TOOL_SCHEMAS
 
 MAIN_BACKEND_URL = os.getenv("MAIN_BACKEND_URL", "https://barbercraft.onrender.com").rstrip("/")
 
