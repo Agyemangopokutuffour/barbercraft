@@ -1,11 +1,3 @@
-"""OpenRouter API wrapper — OpenAI-compatible chat completions with tool calling.
-
-The tool-call loop lives here so main.py stays thin: run_chat() sends the
-conversation to OpenRouter, executes any tool calls the model requests by
-invoking the supplied executor, feeds the results back, and repeats until the
-model replies with plain text.
-"""
-
 import json
 import os
 
@@ -14,10 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
-MODEL = os.getenv("OPENROUTER_MODEL", "").strip()
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
-APP_URL = os.getenv("CHATBOT_URL", "http://127.0.0.1:8002")
 MAX_TOOL_ROUNDS = 6
 
 
@@ -25,26 +14,35 @@ class OpenRouterError(Exception):
     """Raised when OpenRouter can't be configured, reached, or returns an error."""
 
 
-def _headers() -> dict:
-    if not API_KEY:
+def get_api_key() -> str:
+    key = os.getenv("OPENROUTER_API_KEY", "").strip()
+    if not key:
         raise OpenRouterError(
-            "OPENROUTER_API_KEY is not set. Add it to ai/chatbot/.env."
+            "OPENROUTER_API_KEY is not set in environment variables."
         )
+    return key
+
+
+def get_model() -> str:
+    # Falls back to a reliable free model if OPENROUTER_MODEL isn't set in Render
+    return os.getenv("OPENROUTER_MODEL", "meta-llama/llama-3.1-8b-instruct:free").strip()
+
+
+def _headers() -> dict:
+    api_key = get_api_key()
+    app_url = os.getenv("CHATBOT_URL", "https://barbercraft-one.vercel.app")
     return {
-        "Authorization": f"Bearer {API_KEY}",
+        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
-        "HTTP-Referer": APP_URL,  # shows in the OpenRouter dashboard
+        "HTTP-Referer": app_url,
         "X-Title": "BarberCraft Assistant",
     }
 
 
 async def _complete(messages: list[dict], tools: list[dict] | None) -> dict:
-    if not MODEL:
-        raise OpenRouterError(
-            "OPENROUTER_MODEL is not set. Add it to ai/chatbot/.env."
-        )
-
-    payload: dict = {"model": MODEL, "messages": messages}
+    model = get_model()
+    payload: dict = {"model": model, "messages": messages}
+    
     if tools:
         payload["tools"] = tools
         payload["tool_choice"] = "auto"
@@ -63,11 +61,6 @@ async def _complete(messages: list[dict], tools: list[dict] | None) -> dict:
 
 
 async def run_chat(messages: list[dict], tools: list[dict] | None, execute_tool):
-    """Run the model against `messages`, executing tool calls until it answers.
-
-    Returns (reply, tool_calls_made). `execute_tool(name, arguments)` is an
-    async callable that runs a tool against the main backend.
-    """
     tool_calls_made: list[dict] = []
 
     for _ in range(MAX_TOOL_ROUNDS):
@@ -79,7 +72,6 @@ async def run_chat(messages: list[dict], tools: list[dict] | None, execute_tool)
             reply = (message.get("content") or "").strip()
             return reply, tool_calls_made
 
-        # Assistant message with tool_calls must be echoed back verbatim.
         messages.append(message)
 
         for call in tool_calls:
